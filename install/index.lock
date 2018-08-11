@@ -1,0 +1,110 @@
+<?php
+header('Content-type:text/html; charset=utf-8');//设置编码
+define('PCFINAL', TRUE);
+include('../system/library.php');
+error_reporting(0);
+set_time_limit(0);
+if (isset($_POST['save'])) {
+	$str = '';
+	$str .= '<?php';
+	$str .= "\n";
+	$str .= '//Mysql数据库信息';
+	$str .= "\n";
+	$str .= 'if(!defined(\'PCFINAL\')) exit(\'Request Error!\');';
+	$str .= "\n";
+	$str .= 'define(\'DATA_HOST\', \''.$_POST['db_host'].'\');';
+	$str .= "\n";
+	$str .= 'define(\'DATA_USERNAME\', \''.$_POST['db_username'].'\');';
+	$str .= "\n";
+	$str .= 'define(\'DATA_PASSWORD\', \''.$_POST['db_password'].'\');';
+	$str .= "\n";
+	$str .= 'define(\'DATA_NAME\', \''.$_POST['db_name'].'\');';
+	$str .= "\n";
+	$str .= '?>';
+	$files = '../system/data.php';
+	$ff = fopen($files,'w+');
+	fwrite($ff,$str);
+	if (!@$link = mysql_connect($_POST['db_host'],$_POST['db_username'],$_POST['db_password'])) {
+		alert_href('数据库连接失败！请重新输入连接参数。','index.php');
+	}else{
+		if (!mysql_select_db($_POST['db_name'])) {
+			if (!mysql_query('CREATE DATABASE '.$_POST['db_name'].'')) {
+				alert_back('创建失败，请联系空间商确认是否有数据库创建权限！');
+			}
+		}
+		mysql_select_db($_POST['db_name']);
+		mysql_query('set names utf8');
+		$lines = file("data.sql");
+		foreach ($lines as $line) {
+			// Skip it if it's a comment
+			if (substr($line, 0, 2) == '--' || $line == '') continue;
+			// Add this line to the current segment
+			$templine.= $line;
+			// If it has a semicolon at the end, it's the end of the query
+			if (substr(trim($line) , -1, 1) == ';') {
+				// Perform the query
+				mysql_query($templine) or print ('Error performing query \'<strong>' . $templine . '\': ' . mysql_error() . '<br /><br />');
+				// Reset temp variable to empty
+				$templine = '';
+			}
+		}
+		rename('index.php','index.lock');
+		alert_href('安装成功,为了确保安全，请尽量删除install目录','../index.php');
+	}
+}
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>安装向导</title>
+<link href="ui/ui.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="ui/ui.js"></script>
+</head>
+<body>
+<div class="c640">
+	<div class="line">
+		<h1>安装向导</h1>
+		<form method="post">
+			<div class="form-group">
+				<div class="label"><label for="db_host">数据库服务器</label></div>
+				<div class="field">
+					<input id="db_host" class="input" name="db_host" type="text" size="60" data-validate="required:请输入数据库服务器" value="localhost" />
+					<div class="input-note">按服务器提供商提供的填写，一般为 localhost 或者 127.0.0.1</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="label"><label for="db_name">数据库名</label></div>
+				<div class="field">
+					<input id="db_name" class="input" name="db_name" type="text" size="60" data-validate="required:请输入数据库名" value="" />
+					<div class="input-note">按服务器提供商提供的填写，如果有权限也可自己创建。</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="label"><label for="db_username">数据库用户名</label></div>
+				<div class="field">
+					<input id="db_username" class="input" name="db_username" type="text" size="60" data-validate="required:请输入数据库用户名" value="" />
+					<div class="input-note">按服务器提供商提供的填写</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="label"><label for="db_password">数据库密码</label></div>
+				<div class="field">
+					<input id="db_password" class="input" name="db_password" type="text" size="60" data-validate="required:请输入数据库密码" value="" />
+					<div class="input-note">按服务器提供商提供的填写</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="label"><label></label></div>
+				<div class="field">
+					<input id="save" class="btn bg-dot" name="save" type="submit" value="开始安装" />
+					<div class="input-note">安装大概需1分钟，请耐心等待。默认用户名密码都是admin</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+</body>
+</html>

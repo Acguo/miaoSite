@@ -9,10 +9,12 @@ if(isset($_POST['submit'])){
 	null_back($_POST['u_password'],'请输入密码');
 	$u_name = $_POST['u_name'];
 	$u_password = $_POST['u_password'];
-	$yzm=$_POST['yzm'];
-	if(strtolower($yzm)!=strtolower($_SESSION['yzm'])){
-        die('<script type="text/javascript">alert("验证码错误请重新输入");window.history.back();</script>');
-    }
+
+//	$yzm=$_POST['yzm'];
+//	if(strtolower($yzm)!=strtolower($_SESSION['yzm'])){
+//        die('<script type="text/javascript">alert("验证码错误请重新输入");window.history.back();</script>');
+//    }
+
 	$sql = 'select * from mkcms_user where u_name = "'.$u_name.'" and u_password = "'.md5($u_password).'" and u_status=1';
 	$result = mysql_query($sql);
 	if(!! $row = mysql_fetch_array($result)){
@@ -96,14 +98,15 @@ setcookie('user_password',$row['u_password'],time()+3600 * 24 * 365);
         </div>
 
 <!--        添加验证码-->
-        <label class="control-label" for="login_password">验证码</label>
-        <div class="controls" style="margin-bottom:10px;">
-<!--        <input onfocus="document.getElementById('img').src='./yzm.php'" style="display:inline;width:150px" class="form-control input-lg span4"  type="text" name="yzm" required placeholder='验证码'/> -->
-			<input style="display:inline;width:150px" class="form-control input-lg span4"  type="text" name="yzm" required placeholder='验证码'/>
-            <p style="display: inline-block"><img id="img" border="1" src="<?php echo $mkcms_domain.'ucenter/yzm.php';?>" width="80" height="40"></p>
-            <a href="javascript:void(0)" rel="external nofollow" onclick="document.getElementById('img').src='./yzm.php'">看不清？换一个</a>
-        </div>
+<!--        <label class="control-label" for="login_password">验证码</label>-->
+<!--        <div class="controls" style="margin-bottom:10px;">-->
+<!--<!--        <input onfocus="document.getElementById('img').src='./yzm.php'" style="display:inline;width:150px" class="form-control input-lg span4"  type="text" name="yzm" required placeholder='验证码'/> -->-->
+<!--			<input style="display:inline;width:150px" class="form-control input-lg span4"  type="text" name="yzm" required placeholder='验证码'/>-->
+<!--            <p style="display: inline-block"><img id="img" border="1" src="--><?php //echo $mkcms_domain.'ucenter/yzm.php';?><!--" width="80" height="40"></p>-->
+<!--            <a href="javascript:void(0)" rel="external nofollow" onclick="document.getElementById('img').src='./yzm.php'">看不清？换一个</a>-->
+<!--        </div>-->
 <!--        结束-->
+
 		        <label class="control-label" for="login_password"><input type="checkbox" name="brand1" value="">记住密码</label>
         <button type="submit" class="btn btn-primary btn-lg btn-block js-ajax-submit" name="submit" style="margin-left: 0px;margin-top:30px;margin-bottom:10px;">登录</button>
     </form>

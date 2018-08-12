@@ -35,59 +35,70 @@ $data['u_group'] =1;
 $data['u_fav'] =0;
 $data['u_plays'] =0;
 $data['u_downs'] =0;
-//推广注册
-if (isset($_GET['tg'])) {
-	$data['u_qid'] =$_GET['tg'];
-	$result = mysql_query('select * from mkcms_user where u_id="'.$_GET['tg'].'"');
-if($row = mysql_fetch_array($result)){
 
-$u_points=$row['u_points'];
-}
-	}
-$_data['u_points'] =$u_points+$mkcms_tuiguang;
-$sql = 'update mkcms_user set '.arrtoupdate($_data).' where u_id="'.$_GET['tg'].'"';
-if (mysql_query($sql)) {}	
+//////////////////////////推广屏蔽start/////////////////////////////////
+//推广注册
+//if (isset($_GET['tg'])) {
+//	$data['u_qid'] =$_GET['tg'];
+//	$result = mysql_query('select * from mkcms_user where u_id="'.$_GET['tg'].'"');
+//if($row = mysql_fetch_array($result)){
+//
+//$u_points=$row['u_points'];
+//}
+//	}
+//$_data['u_points'] =$u_points+$mkcms_tuiguang;
+//$sql = 'update mkcms_user set '.arrtoupdate($_data).' where u_id="'.$_GET['tg'].'"';
+//if (mysql_query($sql)) {}
+///////////////////////////推广屏蔽end////////////////////////////////
+///
 $data['u_question'] =$token;
 $str = arrtoinsert($data);
-$sql = 'insert into mkcms_user ('.$str[0].') values ('.$str[1].')';
-if (mysql_query($sql)) {
-if($mkcms_mail==1){
-//写入数据库成功，发邮件
-include("emailconfig.php");
-    //创建$smtp对象 这里面的一个true是表示使用身份验证,否则不使用身份验证.
-    $smtp = new Smtp($MailServer, $MailPort, $smtpuser, $smtppass, true); 
-    $smtp->debug = false; 
-    $mailType = "HTML"; //信件类型，文本:text；网页：HTML
-    $email = $email;  //收件人邮箱
-    $emailTitle = "".$mkcms_name."用户帐号激活"; //邮件主题
-    $emailBody = "亲爱的".$username."：<br/>感谢您在我站注册了新帐号。<br/>请点击链接激活您的帐号。<br/><a href='".$mkcms_domain."ucenter/active.php?verify=".$token."' target='_blank'>".$mkcms_domain."ucenter/active.php?verify=".$token."</a><br/>如果以上链接无法点击，请将它复制到你的浏览器地址栏中进入访问，该链接24小时内有效。<br/>如果此次激活请求非你本人所发，请忽略本邮件。<br/><p style='text-align:right'>-------- ".$mkcms_name." 敬上</p>";
-    
-    // sendmail方法
-    // 参数1是收件人邮箱
-    // 参数2是发件人邮箱
-    // 参数3是主题（标题）
-    // 参数4是邮件主题（标题）
-    // 参数4是邮件内容  参数是内容类型文本:text 网页:HTML
-    $rs = $smtp->sendmail($email, $smtpMail, $emailTitle, $emailBody, $mailType);
-if($rs==true){
-echo '<script>alert("恭喜您，注册成功！请登录到您的邮箱及时激活您的帐号！");window.history.go(-1);</script>';
-}
-}
-else
-{
-echo '<script>alert("恭喜您，注册成功！");window.history.go(-1);</script>';	
-}
+
 if($mkcms_smsname!=""){
-if($_POST['txtsmscode']=="" || $_POST['txtsmscode']!=$_SESSION['mobilecode']){
-echo "<script type='text/javascript'>alert('短信验证码不能为空！');history.go(-1);</script>"; 
-}
-else{
-	echo '<script>alert("恭喜您，注册成功！");window.history.go(-1);</script>';	
-}	
+    if($_POST['txtsmscode']=="" || $_POST['txtsmscode']!=$_SESSION['mobilecode']){
+        echo "<script type='text/javascript'>alert('短信验证码错误！');history.go(-1);</script>";
+    }
+    else{
+        $sql = 'insert into mkcms_user ('.$str[0].') values ('.$str[1].')';
+        if (mysql_query($sql)) {}
+        echo '<script>alert("恭喜您，注册成功！");window.history.go(-1);</script>';
+    }
 }
 
-}
 
+
+//////////////////////////推广邮箱验证start/////////////////////////////////
+//if (mysql_query($sql)) {
+//if($mkcms_mail==1){
+////写入数据库成功，发邮件
+//include("emailconfig.php");
+//    //创建$smtp对象 这里面的一个true是表示使用身份验证,否则不使用身份验证.
+//    $smtp = new Smtp($MailServer, $MailPort, $smtpuser, $smtppass, true);
+//    $smtp->debug = false;
+//    $mailType = "HTML"; //信件类型，文本:text；网页：HTML
+//    $email = $email;  //收件人邮箱
+//    $emailTitle = "".$mkcms_name."用户帐号激活"; //邮件主题
+//    $emailBody = "亲爱的".$username."：<br/>感谢您在我站注册了新帐号。<br/>请点击链接激活您的帐号。<br/><a href='".$mkcms_domain."ucenter/active.php?verify=".$token."' target='_blank'>".$mkcms_domain."ucenter/active.php?verify=".$token."</a><br/>如果以上链接无法点击，请将它复制到你的浏览器地址栏中进入访问，该链接24小时内有效。<br/>如果此次激活请求非你本人所发，请忽略本邮件。<br/><p style='text-align:right'>-------- ".$mkcms_name." 敬上</p>";
+//
+//    // sendmail方法
+//    // 参数1是收件人邮箱
+//    // 参数2是发件人邮箱
+//    // 参数3是主题（标题）
+//    // 参数4是邮件主题（标题）
+//    // 参数4是邮件内容  参数是内容类型文本:text 网页:HTML
+//    $rs = $smtp->sendmail($email, $smtpMail, $emailTitle, $emailBody, $mailType);
+//if($rs==true){
+//echo '<script>alert("恭喜您，注册成功！请登录到您的邮箱及时激活您的帐号！");window.history.go(-1);</script>';
+//}
+//}
+////else
+////{
+////echo '<script>alert("恭喜您，注册成功！");window.history.go(-1);</script>';
+////}
+//
+//
+//}
+//////////////////////////推广邮箱验证end/////////////////////////////////
 }
 
 ?>
@@ -168,10 +179,12 @@ return false;
              return false; 
           } 
 			tel = $('#tel').val();
+
 			   //产生验证码
-				for (var i = 0; i < codeLength; i++) {
-								code += parseInt(Math.random() * 9).toString();
-							}
+				// for (var i = 0; i < codeLength; i++) {
+				// 				code += parseInt(Math.random() * 9).toString();
+				// 			}
+				//
 							//设置button效果，开始计时
 								$("#btnSendCode").attr("disabled", "true");
 								$("#btnSendCode").val("请在" + curCount + "秒内输入");
@@ -181,7 +194,8 @@ return false;
                     type: "POST", //用POST方式传输
                     dataType: "text", //数据格式:JSON
                     url: 'yanzhengma.php', //目标地址
-                    data: "&tel=" + tel + "&code=" + code,
+                    // data: "&tel=" + tel + "&code=" + code,
+                    data: "&tel=" + tel,
                     error: function (XMLHttpRequest, textStatus, errorThrown) { },
                     success: function (msg){ }
                 });

@@ -106,7 +106,7 @@ $zname=$namearr[1][$key];
 $fname=$fnamearr[1][$key]; 
 $nname=$nnamearr[1][$key]; 
 $zstar=$stararr[1][$key];
-$tok=$gul; 
+$tok=$gul;
 if ($mkcms_wei==1){
 $playurl=vod.$tok;
 }

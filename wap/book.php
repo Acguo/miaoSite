@@ -67,6 +67,12 @@ $zy='class="active"'?>
 .messsub{padding:0px 0 0 110px;}
 .messsub input{width:100px; height:35px; background:#ddd; font-size:14px; font-weight:bold; cursor:pointer;margin-right:5px}
 .messsub input:hover{ background:#f60;color:#fff;}
+.controls label{height:30px; font-size:14px; line-height:30px; text-align:right;padding-right:10px;}
+#img {
+    width: 80px;
+    height: 40px;
+    margin-top: 20px;
+}
 #label0{display:none;color:#0aa770;height:28px;line-height:28px;}
 #label1{display:none;color:#0aa770;height:28px;line-height:28px;}
 #label2{display:none;color:#0aa770;height:28px;line-height:28px;}
@@ -106,12 +112,12 @@ $zy='class="active"'?>
       <div class="clears"></div>
      </div>
     <!--        添加验证码-->
-    <label class="control-label" for="login_password">验证码</label>
     <div class="controls" style="margin-bottom:10px;">
+        <label class="control-label" for="login_password">验证码</label>
         <!--        <input onfocus="document.getElementById('img').src='./yzm.php'" style="display:inline;width:150px" class="form-control input-lg span4"  type="text" name="yzm" required placeholder='验证码'/> -->
         <input style="display:inline;width:150px" class="form-control input-lg span4"  type="text" name="yzm" required placeholder='验证码'/>
-        <p style="display: inline-block"><img id="img" border="1" src="<?php echo $mkcms_domain.'../ucenter/yzm.php';?>" width="80" height="40"></p>
-        <a href="javascript:void(0)" rel="external nofollow" onclick="document.getElementById('img').src='../ucenter/yzm.php'">看不清？换一个</a>
+        <p style="display: inline-block"><img id="img" border="1" src="<?php echo $mkcms_domain.'../ucenter/yzm.php';?>"></p>
+        <a href="javascript:void(0)" rel="external nofollow" onclick="document.getElementById('img').src='../ucenter/yzm.php'">换一个</a>
     </div>
     <!--        结束-->
 
